@@ -7,7 +7,7 @@ const ProductsComponent = ()=>{
         const {id,title,category,price,image} = product;
         return(
             <div className="four wide column" key={index}>
-                <Link to={`/product/${id}`}>
+            <Link to={`/product/${id}`}>
             <div className="ui link cards">
                 <div className="card">
                     <div className="image">

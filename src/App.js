@@ -6,9 +6,9 @@ import {
   Route,
   Routes
 } from "react-router-dom";
-
 import ProductsDetail from './containers/ProductDetails';
 import ProductsList from './containers/ProductsList';
+import Cart from './containers/Cart';
 function App() {
   return (
     <div className="App">
@@ -17,6 +17,7 @@ function App() {
       <Routes>
       <Route path="/" exact element={<ProductsList/>} />
         <Route path="/product/:productId" element={<ProductsDetail/>} />
+        <Route path="/cart/:cartproductId" element={<Cart/>} />
           <Route>404 Not Found</Route>
           </Routes>
       </Router>

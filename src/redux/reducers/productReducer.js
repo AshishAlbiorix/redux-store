@@ -24,3 +24,11 @@ export const selectedProductReducer = (state = {}, { type, payload }) => {
   }
 };
 
+export const addToCartProduct = (state = initialState, { type, payload }) => {
+  switch (type) {
+    case ActionTypes.ADD_TO_CART:
+      return { ...state, products:payload };
+    default:
+      return state;
+  }
+};
