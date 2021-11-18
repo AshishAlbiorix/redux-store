@@ -1,31 +1,40 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectProducts,
-  removeSelectProducts,
+  removeSelectProducts
 } from "../redux/actions/productActions";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { addToCart } from "../redux/actions/productActions";
+
 const ProductsDetail = () => {
   const product = useSelector((state) => state.SelectedProduct);
-  const {image, title, price, category, description,rating } = product;
+
+  const { image, title, price, category, description, rating } = product;
+  const [allpro,setAllPro] = useState([]);  
   const { productId } = useParams();
   const dispatch = useDispatch();
-  const fetchSingleData = async () => {
-    const response = await axios
-      .get(`https://fakestoreapi.com/products/${productId}`)
-      .catch((error) => {
-        console.log("error", error);
-      });
-    dispatch(selectProducts(response.data));
-  };
+  
+  
   useEffect(() => {
+    const fetchSingleData = async () => {
+      const response = await axios
+        .get(`https://fakestoreapi.com/products/${productId}`)
+        .catch((error) => {
+          console.log("error", error);
+        });
+        setAllPro(response.data)
+      dispatch(selectProducts(response.data));
+    };
     if (productId && productId !== "") fetchSingleData();
     return () => {
       dispatch(removeSelectProducts());
     };
-  }, [productId]);
+  }, [productId])
+  const dispatchHandler = ()=>{
+    dispatch(addToCart(allpro))
+  }
   return (
     <div className="ui grid container">
       {Object.keys(product).length === 0 ? (
@@ -50,33 +59,78 @@ const ProductsDetail = () => {
             <div className="ui vertical divider">AND</div>
             <div className="middle aligned row">
               <div className="column lp">
-                <img className="ui fluid image" src={image} />
+                <img className="ui fluid image" src={image} alt={title}/>
               </div>
               <div className="column rp">
                 <h1>{title}</h1>
                 <h2>
-                  <a className="ui teal tag label">${price}</a>
+                  <label className="ui teal tag label">${price}</label>
                 </h2>
                 <h3 className="ui brown block header">{category}</h3>
                 <p>{description}</p>
-                <div class="ui star rating" role="radiogroup" tabindex="-1">
-                  <i tabindex="0" aria-checked={Math.floor( rating.rate ) >= 1 ? "true" : "false"} aria-posinset={Math.floor( rating.rate )} aria-setsize={Math.floor( rating.rate )} class={Math.floor( rating.rate ) >= 1 ? "active icon" : "icon"} role="radio"></i>
-                  <i tabindex="0" aria-checked={Math.floor( rating.rate ) >= 2 ? "true" : "false"} aria-posinset={Math.floor( rating.rate )} aria-setsize={Math.floor( rating.rate )} class={Math.floor( rating.rate ) >= 2 ? "active icon" : "icon"} role="radio"></i>
-                  <i tabindex="0" aria-checked={Math.floor( rating.rate ) >= 3 ? "true" : "false"} aria-posinset={Math.floor( rating.rate )} aria-setsize={Math.floor( rating.rate )} class={Math.floor( rating.rate ) >= 3 ? "active icon" : "icon"} role="radio"></i>
-                  <i tabindex="0" aria-checked={Math.floor( rating.rate ) >= 4 ? "true" : "false"} aria-posinset={Math.floor( rating.rate )} aria-setsize={Math.floor( rating.rate )} class={Math.floor( rating.rate ) >= 4 ? "active icon" : "icon"} role="radio"></i>
-                  <i tabindex="0" aria-checked={Math.floor( rating.rate ) >= 5 ? "true" : "false"} aria-posinset={Math.floor( rating.rate )} aria-setsize={Math.floor( rating.rate )} class={Math.floor( rating.rate ) >= 5 ? "active icon" : "icon"} role="radio"></i>
+                <div className="ui star rating" role="radiogroup">
+                  <i
+                    aria-checked={
+                      Math.floor(rating.rate) >= 1 ? "true" : "false"
+                    }
+                    aria-posinset={Math.floor(rating.rate)}
+                    aria-setsize={Math.floor(rating.rate)}
+                    className={
+                      Math.floor(rating.rate) >= 1 ? "active icon" : "icon"
+                    }
+                    role="radio"
+                  ></i>
+                  <i
+                    aria-checked={
+                      Math.floor(rating.rate) >= 2 ? "true" : "false"
+                    }
+                    aria-posinset={Math.floor(rating.rate)}
+                    aria-setsize={Math.floor(rating.rate)}
+                    className={
+                      Math.floor(rating.rate) >= 2 ? "active icon" : "icon"
+                    }
+                    role="radio"
+                  ></i>
+                  <i
+                    aria-checked={
+                      Math.floor(rating.rate) >= 3 ? "true" : "false"
+                    }
+                    aria-posinset={Math.floor(rating.rate)}
+                    aria-setsize={Math.floor(rating.rate)}
+                    className={
+                      Math.floor(rating.rate) >= 3 ? "active icon" : "icon"
+                    }
+                    role="radio"
+                  ></i>
+                  <i
+                    aria-checked={
+                      Math.floor(rating.rate) >= 4 ? "true" : "false"
+                    }
+                    aria-posinset={Math.floor(rating.rate)}
+                    aria-setsize={Math.floor(rating.rate)}
+                    className={
+                      Math.floor(rating.rate) >= 4 ? "active icon" : "icon"
+                    }
+                    role="radio"
+                  ></i>
+                  <i
+                    aria-checked={
+                      Math.floor(rating.rate) >= 5 ? "true" : "false"
+                    }
+                    aria-posinset={Math.floor(rating.rate)}
+                    aria-setsize={Math.floor(rating.rate)}
+                    className={
+                      Math.floor(rating.rate) >= 5 ? "active icon" : "icon"
+                    }
+                    role="radio"
+                  ></i>
                 </div>
-                <Link to={`/cart/${productId}`}>
-                <div className="ui vertical animated button" tabIndex="0">
+                <div className="ui vertical animated button" onClick={dispatchHandler}>
                   <div className="hidden content">
                     <i className="shop icon"></i>
                   </div>
-                  
-                  <div className="visible content">
-                    Add to Cart
-                  </div>
+                  <div className="visible content">Add to Cart</div>
                 </div>
-                  </Link>
               </div>
             </div>
           </div>
