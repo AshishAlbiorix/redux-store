@@ -1,40 +1,41 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectProducts,
-  removeSelectProducts
+  removeSelectProducts,
 } from "../redux/actions/productActions";
 import axios from "axios";
 import { addToCart } from "../redux/actions/productActions";
 
 const ProductsDetail = () => {
   const product = useSelector((state) => state.SelectedProduct);
+  const { id, image, title, price, category, description, rating } = product;
 
-  const { image, title, price, category, description, rating } = product;
-  const [allpro,setAllPro] = useState([]);  
+  const [allpro, setAllPro] = useState([]);
   const { productId } = useParams();
   const dispatch = useDispatch();
   
-  
+  const fetchSingleData = async () => {
+    const response = await axios
+      .get(`https://fakestoreapi.com/products/${productId}`)
+      .catch((error) => {
+        console.log("error", error);
+      });
+    setAllPro(response.data);
+    dispatch(selectProducts(response.data));
+  };
+
   useEffect(() => {
-    const fetchSingleData = async () => {
-      const response = await axios
-        .get(`https://fakestoreapi.com/products/${productId}`)
-        .catch((error) => {
-          console.log("error", error);
-        });
-        setAllPro(response.data)
-      dispatch(selectProducts(response.data));
-    };
+    
     if (productId && productId !== "") fetchSingleData();
     return () => {
       dispatch(removeSelectProducts());
     };
-  }, [productId])
-  const dispatchHandler = ()=>{
-    dispatch(addToCart(allpro))
-  }
+  }, [productId]);
+  const dispatchHandler = () => {
+    dispatch(addToCart(allpro));
+  };
   return (
     <div className="ui grid container">
       {Object.keys(product).length === 0 ? (
@@ -59,7 +60,7 @@ const ProductsDetail = () => {
             <div className="ui vertical divider">AND</div>
             <div className="middle aligned row">
               <div className="column lp">
-                <img className="ui fluid image" src={image} alt={title}/>
+                <img className="ui fluid image" src={image} alt={title} />
               </div>
               <div className="column rp">
                 <h1>{title}</h1>
@@ -125,7 +126,10 @@ const ProductsDetail = () => {
                     role="radio"
                   ></i>
                 </div>
-                <div className="ui vertical animated button" onClick={dispatchHandler}>
+                <div
+                  className="ui vertical animated button"
+                  onClick={dispatchHandler}
+                >
                   <div className="hidden content">
                     <i className="shop icon"></i>
                   </div>

@@ -4,25 +4,27 @@ import { removeFromCart } from "../redux/actions/productActions";
 const Cart = () => {
   const cart = useSelector((state) => state.AddTOCart.cart);
   const dispatch = useDispatch();
-  const [getIndex,setGetIndex] = useState();
-  var array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+
   function getIndexData(data){
     var filtered = cart.filter(function(value, index, arr){
       return index != data;
     });
     dispatch(removeFromCart(filtered))
   }
+  let unique = [...new Set(cart)];
   return (
     <div className="ui grid container right">
       <div className="ui relaxed divided list">
-        {cart.map((item, index) => {
+        {
+        unique.map((item, index) => {
           return (
             <div className="item" key={index}>
+              
               <img src={item.image} className="cart-image" alt={item.title} />  
               <div className="content">
                 {item.title}
                 <div className="description">{item.category}</div>
-                {/* <button onClick={()=>setGetIndex(index)}>Remove From Cart</button> */}
+                <div className="quantity">Quantity:- {cart.filter((obj) => obj.id === item.id).length}</div>
                 <button className="ui red button" onClick={() => getIndexData(index)}>Remove From Cart</button>
               </div>
             </div>
